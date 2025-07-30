@@ -60,7 +60,7 @@ function BasicLayout({ image, children }) {
                     width="80%"
                   >
                     <Typography variant="h3" style={{ color: "white" }}>
-                      Log in e-SireMartStore
+                      Log in Boiler
                     </Typography>
                   </MDBox>
                 </MDBox>
