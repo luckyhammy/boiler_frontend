@@ -13,6 +13,7 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 import AuthService from "../../services/auth-service";
 import MDButton from "components/MDButton";
 import MDAlert from "components/MDAlert";
+import { useMaterialUIController } from "context";
 
 // Custom hook for responsive design
 const useResponsive = () => {
@@ -21,8 +22,8 @@ const useResponsive = () => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 480);
-      setIsTablet(window.innerWidth <= 768 && window.innerWidth > 480);
+      setIsMobile(window.innerWidth <= 600);
+      setIsTablet(window.innerWidth <= 900 && window.innerWidth > 600);
     };
 
     checkScreenSize();
@@ -35,6 +36,8 @@ const useResponsive = () => {
 
 function Tables() {
   const { isMobile, isTablet } = useResponsive();
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
   // State for dynamic table data
   const [tableData, setTableData] = useState({ columns: [], rows: [] });
   const [loading, setLoading] = useState(false);
@@ -56,10 +59,9 @@ function Tables() {
         // Responsive column configuration based on screen size
         const getVisibleColumns = () => {
           if (isMobile) {
-            // Mobile: Show only essential columns (skip first two columns)
+            // Mobile: Show only 2 essential columns like Sheet1
             return [
               { Header: 'Email', accessor: 'email' },
-              { Header: 'Permission', accessor: 'permission' },
               { Header: 'Actions', accessor: 'actions' },
             ];
           } else if (isTablet) {
@@ -86,17 +88,19 @@ function Tables() {
 
         const columns = getVisibleColumns().map(col => ({
           ...col,
-          minWidth: isMobile ? 80 : isTablet ? 120 : 150,
-          maxWidth: isMobile ? 150 : isTablet ? 200 : 250,
+          minWidth: isMobile ? 40 : isTablet ? 120 : 150,
+          maxWidth: isMobile ? 80 : isTablet ? 200 : 250,
           Cell: col.accessor === 'actions' ? undefined : ({ value }) => (
             <div style={{
-              fontSize: isMobile ? '11px' : '13px',
-              lineHeight: '1.3',
+              fontSize: isMobile ? '12px' : '14px',
+              lineHeight: '1.2',
               wordBreak: 'break-word',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              padding: isMobile ? '4px 6px' : '6px 8px',
+              padding: isMobile ? '2px 4px' : '6px 8px',
+              color: darkMode ? '#ffffff' : '#000000',
+              fontWeight: '500',
             }}>
               {value || 'N/A'}
             </div>
@@ -106,11 +110,11 @@ function Tables() {
         const rows = users.map((user) => {
           const baseRow = {
             email: user.email,
-            permission: user.admin ? 'admin' : 'user',
           };
 
-          // Add first_name and last_name only for tablet and desktop
+          // Add permission only for tablet and desktop
           if (!isMobile) {
+            baseRow.permission = user.admin ? 'admin' : 'user';
             baseRow.first_name = user.first_name;
             baseRow.last_name = user.last_name;
           }
@@ -133,9 +137,9 @@ function Tables() {
                     });
                   }}
                   style={{
-                    fontSize: isMobile ? '9px' : '11px',
-                    padding: isMobile ? '3px 6px' : '4px 8px',
-                    minWidth: isMobile ? '40px' : '50px',
+                    fontSize: isMobile ? '10px' : '11px',
+                    padding: isMobile ? '1px 3px' : '4px 8px',
+                    minWidth: isMobile ? '30px' : '50px',
                   }}
                 >
                   {user.admin ? 'Set as User' : 'Set as Admin'}
@@ -154,9 +158,9 @@ function Tables() {
                     });
                   }}
                   style={{
-                    fontSize: isMobile ? '9px' : '11px',
-                    padding: isMobile ? '3px 6px' : '4px 8px',
-                    minWidth: isMobile ? '40px' : '50px',
+                    fontSize: isMobile ? '10px' : '11px',
+                    padding: isMobile ? '1px 3px' : '4px 8px',
+                    minWidth: isMobile ? '30px' : '50px',
                   }}
                 >
                   Delete
@@ -294,6 +298,7 @@ function Tables() {
                   WebkitOverflowScrolling: 'touch',
                 }}>
                   <DataTable
+                    key={`user-table-${isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop'}`}
                     table={tableData}
                     entriesPerPage={{ 
                       defaultValue: isMobile ? 5 : isTablet ? 8 : 10, 
@@ -302,17 +307,26 @@ function Tables() {
                     canSearch={true}
                     showTotalEntries={true}
                     isLoading={loading}
-                    style={{
+                    sx={{
                       minWidth: isMobile ? '100%' : 'auto',
-                      fontSize: isMobile ? '11px' : '13px',
+                      fontSize: isMobile ? '12px' : '14px',
                       '& .MuiTableCell-root': {
-                        padding: isMobile ? '8px 4px' : isTablet ? '10px 6px' : '12px 8px',
-                        borderSpacing: isMobile ? '2px' : '4px',
+                        padding: isMobile ? '2px 1px' : isTablet ? '10px 6px' : '12px 8px',
+                        borderSpacing: isMobile ? '1px' : '4px',
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: darkMode ? '#ffffff' : '#000000',
+                        fontWeight: '500',
                       },
                       '& .MuiTableHead-root .MuiTableCell-root': {
-                        padding: isMobile ? '10px 4px' : isTablet ? '12px 6px' : '14px 8px',
-                        fontSize: isMobile ? '11px' : '13px',
+                        padding: isMobile ? '4px 1px' : isTablet ? '12px 6px' : '14px 8px',
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: darkMode ? '#ffffff' : '#000000',
                         fontWeight: 600,
+                      },
+                      '& .MuiTableBody-root .MuiTableCell-root': {
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: darkMode ? '#ffffff' : '#000000',
+                        fontWeight: '500',
                       },
                     }}
                   />

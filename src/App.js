@@ -191,8 +191,8 @@ export default function App() {
             <>
               <Sidenav
                 color={sidenavColor}
-                brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-                brandName=""
+                brand=""
+                brandName={authContext.userInfo ? (authContext.isAdmin ? `${authContext.userInfo.first_name} (Admin)` : `${authContext.userInfo.first_name} (User)`) : "Dashboard"}
                 routes={routes}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}

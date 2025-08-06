@@ -6,8 +6,8 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import Breadcrumbs from "examples/Breadcrumbs";
+import Grid from "@mui/material/Grid";
+
 import AuthService from "services/auth-service";
 import {
   navbar,
@@ -25,6 +25,10 @@ import {
 } from "context";
 import MDButton from "components/MDButton";
 import { AuthContext } from "context";
+import logo from "assets/images/logo.png";
+import logo1 from "assets/images/logo1.png";
+import header from "assets/images/header.png";
+
 
 function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
   const authContext = useContext(AuthContext);
@@ -108,41 +112,83 @@ function DashboardNavbar({ absolute = false, light = false, isMini = false }) {
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
-        </MDBox>
+          <Grid container spacing={3} pt={3}> 
+            {/* First Logo - Hidden on mobile/tablet, visible on desktop */}
+            <Grid item xs={0} md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
+                <MDBox mb={1.5} textAlign='center'>
+                  <img src={logo} alt="logo" style={{width: "100px", height: "100px"}}/>
+                </MDBox>
+            </Grid>
+            
+            {/* Header Image - Full width on mobile/tablet, 6 columns on desktop */}
+            <Grid item xs={8} md={6} lg={6}>
+                <MDBox mb={1.5} textAlign='center' display="flex" alignItems="center" justifyContent="space-between">
+                  <img src={header} alt="header" style={{width: "100%", height: "100px"}}/>
+                  
+                  {/* Mobile Buttons Container - Only visible on mobile/tablet */}
+                  <MDBox sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1, ml: 2 }}>
+                    {/* Hamburger Menu Button */}
+                    <IconButton
+                      size="small"
+                      disableRipple
+                      color="inherit"
+                      onClick={handleMiniSidenav}
+                      sx={{
+                        color: light || darkMode ? 'white' : 'inherit',
+                        backgroundColor: 'rgba(255,255,255,0.1)',
+                        borderRadius: '50%',
+                        width: '32px',
+                        height: '32px',
+                        '&:hover': {
+                          backgroundColor: 'rgba(255,255,255,0.2)',
+                        }
+                      }}
+                    >
+                      <Icon fontSize="small">
+                        {miniSidenav ? "menu_open" : "menu"}
+                      </Icon>
+                    </IconButton>
+                    
+                    {/* Logout Button */}
+                    <MDButton
+                      variant="gradient"
+                      color="info"
+                      size="small"
+                      onClick={handleLogOut}
+                    >
+                      Log Out
+                    </MDButton>
+                  </MDBox>
+                </MDBox>
+            </Grid>
+            
+            {/* Third Logo - Hidden on mobile/tablet, visible on desktop */}
+            <Grid item xs={0} md={3} lg={3} sx={{ display: { xs: 'none', md: 'block' } }}>
+                <MDBox mb={1.5} textAlign='center'>
+                <img src={logo1} alt="logo1" style={{width: "100px", height: "100px"}}/>
+                </MDBox>
+            </Grid>       
+          </Grid>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox display="flex" alignItems="center" color={light ? "white" : "inherit"}>
-              {/* User Info Display */}
-              {authContext.userInfo && (
-                <MDBox mr={2} display="flex" alignItems="center">
-                  <MDTypography variant="button" fontWeight="medium" color="inherit">
-                    {authContext.userInfo.first_name}
-                  </MDTypography>
-                  {authContext.isAdmin && (
-                    <MDBox ml={1} display="flex" alignItems="center">
-                      <Icon sx={{ fontSize: '16px', color: 'success.main' }}>admin_panel_settings</Icon>
-                      <MDTypography variant="caption" color="success.main" ml={0.5}>
-                        Admin
-                      </MDTypography>
-                    </MDBox>
-                  )}
-                </MDBox>
-              )}
+              {/* Desktop Hamburger Menu Button - Only visible on desktop */}
+              <MDBox sx={{ display: { xs: 'none', md: 'block' } }}>
+                <IconButton
+                  size="small"
+                  disableRipple
+                  color="inherit"
+                  sx={navbarMobileMenu}
+                  onClick={handleMiniSidenav}
+                >
+                  <Icon sx={iconsStyle} fontSize="medium">
+                    {miniSidenav ? "menu_open" : "menu"}
+                  </Icon>
+                </IconButton>
+              </MDBox>
               
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
-              </IconButton>
-              <MDBox>
+              {/* Desktop Logout Button - Only visible on desktop */}
+              <MDBox sx={{ display: { xs: 'none', md: 'block' } }}>
                 <MDButton
                   variant="gradient"
                   color="info"

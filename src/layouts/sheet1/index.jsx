@@ -7,10 +7,11 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DataTable from "examples/Tables/DataTable";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { setSheet } from "../../redux/sheet";
 import axios from "axios";
 import { notification } from "antd";
+import { useMaterialUIController } from "context";
 
 // Custom hook for responsive design
 const useResponsive = () => {
@@ -38,6 +39,8 @@ import MDInput from "components/MDInput";
 function Tables() {
   const dispatch = useDispatch();
   const { isMobile, isTablet } = useResponsive();
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
 
   const sheetData = useSelector((state) => state.sheet.data);
   
@@ -112,6 +115,10 @@ function Tables() {
   // Get all column keys and titles from the first row
   const allKeys = sheetData && sheetData.length > 0 ? Object.keys(sheetData[0]) : [];
   const allTitles = sheetData && sheetData.length > 0 ? sheetData[0] : {};
+  
+  // Calculate how many fields to show in each section
+  const totalFields = allKeys.length;
+  const fieldsPerSection = Math.ceil(totalFields / 3);
 
   // Responsive column configuration based on screen size
   const getVisibleKeys = () => {
@@ -138,13 +145,15 @@ function Tables() {
       maxWidth: isMobile ? 150 : isTablet ? 200 : 250,
       Cell: ({ value }) => (
         <div style={{
-          fontSize: isMobile ? '11px' : '13px',
+          fontSize: isMobile ? '12px' : '14px',
           lineHeight: '1.3',
           wordBreak: 'break-word',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
           padding: isMobile ? '4px 6px' : '6px 8px',
+          color: darkMode ? '#ffffff' : '#000000',
+          fontWeight: '500',
         }}>
           {value || 'N/A'}
         </div>
@@ -161,7 +170,7 @@ function Tables() {
           color="info"
           size={isMobile ? "small" : "medium"}
           onClick={() => {
-            setSelectedRow(row.original);
+            setSelectedRow(row.original._completeRowData);
             setModalOpen(true);
           }}
           style={{
@@ -184,6 +193,8 @@ function Tables() {
           visibleKeys.forEach((key) => {
             rowData[key] = row[key];
           });
+          // Store the complete row data for modal display
+          rowData._completeRowData = row;
           // Details button is now handled in the column definition
           rowData.details = null; // This will be rendered by the Cell component
           return rowData;
@@ -259,17 +270,26 @@ function Tables() {
                     showTotalEntries={true}
                     isLoading={loading}
                     isSorted={false}
-                    style={{
+                    sx={{
                       minWidth: isMobile ? '100%' : 'auto',
-                      fontSize: isMobile ? '11px' : '13px',
+                      fontSize: isMobile ? '12px' : '14px',
                       '& .MuiTableCell-root': {
                         padding: isMobile ? '8px 4px' : isTablet ? '10px 6px' : '12px 8px',
                         borderSpacing: isMobile ? '2px' : '4px',
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: darkMode ? '#ffffff' : '#000000',
+                        fontWeight: '500',
                       },
                       '& .MuiTableHead-root .MuiTableCell-root': {
                         padding: isMobile ? '10px 4px' : isTablet ? '12px 6px' : '14px 8px',
-                        fontSize: isMobile ? '11px' : '13px',
+                        fontSize: isMobile ? '12px' : '14px',
                         fontWeight: 600,
+                        color: darkMode ? '#ffffff' : '#000000',
+                      },
+                      '& .MuiTableBody-root .MuiTableCell-root': {
+                        fontSize: isMobile ? '12px' : '14px',
+                        color: darkMode ? '#ffffff' : '#000000',
+                        fontWeight: '500',
                       },
                     }}
                   />
@@ -332,7 +352,7 @@ function Tables() {
                     Basic Information
                   </MDTypography>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {allKeys.slice(0, 6).map((key) => (
+                    {allKeys.slice(0, fieldsPerSection).map((key) => (
                       <div
                         key={key}
                         style={{
@@ -386,7 +406,7 @@ function Tables() {
                     Technical Details
                   </MDTypography>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {allKeys.slice(6, 12).map((key) => (
+                    {allKeys.slice(fieldsPerSection, fieldsPerSection * 2).map((key) => (
                       <div
                         key={key}
                         style={{
@@ -440,7 +460,7 @@ function Tables() {
                     Certificate & Contact
                   </MDTypography>
                   <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {allKeys.slice(12).map((key) => (
+                    {allKeys.slice(fieldsPerSection * 2).map((key) => (
                       <div
                         key={key}
                         style={{
