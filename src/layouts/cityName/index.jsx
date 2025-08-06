@@ -12,9 +12,12 @@ import MDInput from "components/MDInput";
 import CityService from "../../services/city-service";
 import { notification } from "antd";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import { useMaterialUIController } from "context";
 
 
 function CityTables() {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -86,7 +89,25 @@ function CityTables() {
   };
 
   const columns = [
-    { Header: "City Name", accessor: "name" },
+    { 
+      Header: "City Name", 
+      accessor: "name",
+      Cell: ({ value }) => (
+        <div style={{
+          fontSize: '14px',
+          lineHeight: '1.3',
+          wordBreak: 'break-word',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          padding: '6px 8px',
+          color: darkMode ? '#ffffff' : '#000000',
+          fontWeight: '500',
+        }}>
+          {value || 'N/A'}
+        </div>
+      ),
+    },
     { Header: "Edit", accessor: "edit" },
     { Header: "Delete", accessor: "delete" },
   ];
@@ -165,6 +186,24 @@ function CityTables() {
                   canSearch={true}
                   showTotalEntries={true}
                   isLoading={loading}
+                  sx={{
+                    fontSize: '14px',
+                    '& .MuiTableCell-root': {
+                      fontSize: '14px',
+                      color: darkMode ? '#ffffff' : '#000000',
+                      fontWeight: '500',
+                    },
+                    '& .MuiTableHead-root .MuiTableCell-root': {
+                      fontSize: '14px',
+                      color: darkMode ? '#ffffff' : '#000000',
+                      fontWeight: 600,
+                    },
+                    '& .MuiTableBody-root .MuiTableCell-root': {
+                      fontSize: '14px',
+                      color: darkMode ? '#ffffff' : '#000000',
+                      fontWeight: '500',
+                    },
+                  }}
                 />
               </MDBox>
             </Card>

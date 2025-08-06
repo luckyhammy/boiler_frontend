@@ -13,6 +13,7 @@ import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
+import { useMaterialUIController } from "context";
 
 function DataTable({
   entriesPerPage = { defaultValue: 10, entries: [5, 10, 15, 20, 25] },
@@ -23,6 +24,8 @@ function DataTable({
   isSorted = true,
   noEndBorder = false,
 }) {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
@@ -126,7 +129,11 @@ function DataTable({
                 sx={{ width: "5rem" }}
                 renderInput={(params) => <MDInput {...params} />}
               />
-              <MDTypography variant="caption" color="secondary">
+              <MDTypography 
+                variant="caption" 
+                color="secondary"
+                sx={{ color: darkMode ? '#ffffff' : undefined }}
+              >
                 &nbsp;&nbsp;entries per page
               </MDTypography>
             </MDBox>
@@ -138,6 +145,12 @@ function DataTable({
                 value={search}
                 size="small"
                 fullWidth
+                sx={{
+                  '& .MuiInputBase-input::placeholder': {
+                    color: darkMode ? '#ffffff' : undefined,
+                    opacity: darkMode ? 0.7 : undefined,
+                  },
+                }}
                 onChange={({ currentTarget }) => {
                   setSearch(search);
                   onSearchChange(currentTarget.value);
@@ -194,7 +207,12 @@ function DataTable({
       >
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
-            <MDTypography variant="button" color="secondary" fontWeight="regular">
+            <MDTypography 
+              variant="button" 
+              color="secondary" 
+              fontWeight="regular"
+              sx={{ color: darkMode ? '#ffffff' : undefined }}
+            >
               Showing {entriesStart} to {entriesEnd} of {rows.length} entries
             </MDTypography>
           </MDBox>

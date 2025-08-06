@@ -26,8 +26,10 @@ const DataTableBodyCell = ({ noBorder = false, align = "left", children }) => {
       textAlign={align}
       py={1.5}
       px={3}
-      sx={({ palette: { light }, typography: { size }, borders: { borderWidth } }) => ({
-        fontSize: size.sm,
+      sx={({ palette: { light }, borders: { borderWidth } }) => ({
+        fontSize: '14px',
+        color: '#000000',
+        fontWeight: '500',
         borderBottom: noBorder ? "none" : `${borderWidth[1]} solid ${light.main}`,
       })}
     >
@@ -36,7 +38,7 @@ const DataTableBodyCell = ({ noBorder = false, align = "left", children }) => {
         justifyContent={align === "center" ? "center" : align === "right" ? "flex-end" : "flex-start"}
         alignItems="center"
         width="100%"
-        color="text"
+        color="#000000"
         sx={{ verticalAlign: "middle" }}
       >
         {children}

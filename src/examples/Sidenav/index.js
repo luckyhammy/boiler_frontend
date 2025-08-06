@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -33,11 +33,26 @@ import {
   setWhiteSidenav,
 } from "context";
 
+// Import logo for responsive display
+import logo from "assets/images/logo.png";
+
 function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "").toLowerCase();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check screen size for responsive logo display
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   let textColor = "white";
 
@@ -146,12 +161,29 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="100%" />}
+          {/* Show logo in sidebar only on mobile/tablet (when navbar logo is hidden) */}
+          {isMobile && (
+            <MDBox 
+              component="img" 
+              src={logo} 
+              alt="Logo" 
+              sx={{ 
+                width: "60px", 
+                height: "60px", 
+                mr: 2,
+                display: { xs: "block", md: "none" }
+              }} 
+            />
+          )}
+          
+          {/* Show brand image if provided and not mobile */}
+          {brand && !isMobile && <MDBox component="img" src={brand} alt="Brand" width="100%" />}
+          
           <MDBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
+            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor} sx={{ fontSize: "16px" }}>
               {brandName}
             </MDTypography>
           </MDBox>
