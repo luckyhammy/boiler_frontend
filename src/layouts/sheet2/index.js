@@ -1874,7 +1874,9 @@ function Sheet2() {
                       </Grid>
 
                       <Grid item xs={12} md={12} lg={12}>
-                              hiii
+                              Develped by Mohammed Abdul.
+                              Contact: Telegram --- @blue91230
+                              Let us contact through telegram, please!
                       </Grid>
 
                     </Grid>
