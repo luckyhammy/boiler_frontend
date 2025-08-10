@@ -2001,6 +2001,7 @@ function Sheet2() {
                                   date="data updated from Google Sheets"
                                   chart={boilerRegisteredBarChartData}
                                 />
+<<<<<<< HEAD
                               </MDBox>
                             </Grid>
                             <Grid item xs={12} md={6} lg={6}>
@@ -2042,6 +2043,15 @@ function Sheet2() {
                       </MDBox>
                     )}
 
+=======
+                              </div>
+                            </MDBox>
+                          </Card>
+                        </MDBox>
+                      </Grid>
+                    </Grid>
+                  </MDBox>
+>>>>>>> 20796f5b5f6079f1c49ebc924e6d2f416b1e7dca
                 </MDBox>
               </MDBox>
             </Card>
